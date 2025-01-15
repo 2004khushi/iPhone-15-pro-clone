@@ -10,4 +10,4 @@ Currently, two official plugins are available:
 
 ## Live Website
 
-Check out the live website here: [View the live site](i-phone-15-pro-clone-mwogz5art-khushis-projects-ea0259c2.vercel.app)
+Check out the live website here: [View the live site](https://i-phone-15-pro-clone-six.vercel.app)
