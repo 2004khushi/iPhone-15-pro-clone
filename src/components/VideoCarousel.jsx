@@ -42,15 +42,26 @@ export const VideoCarousel = () => {
     },[isEnd, videoId])
 
     useEffect(() => {
-        if(loadedData.length>3){
-            if(!isPlaying){
-                videoRef.current[videoId].pause();
-            }else {
-                startPlay && videoRef.current[videoId].play();
-            }
-        }
-
-    },[isPlaying, startPlay, videoId, loadedData])
+      if (loadedData.length > 3) {
+          const videoElement = videoRef.current[videoId];
+  
+          if (isPlaying && !videoElement.paused) {
+              // Video is already playing, no need to call play again
+              return;
+          }
+  
+          if (isPlaying) {
+              // Ensure play is called only if the video is ready
+              videoElement.play().catch((err) => {
+                  console.error('Error playing video:', err);
+              });
+          } else {
+              // Pause the video if it's playing
+              videoElement.pause();
+          }
+      }
+    }, [isPlaying, startPlay, videoId, loadedData]);
+  
 
     const handleloadedMetadata = (i,e) => setloadedData((pre) => [...pre, e])
 
@@ -124,12 +135,19 @@ export const VideoCarousel = () => {
             break;
     
           case "pause":
-            setVideo((pre) => ({ ...pre, isPlaying: !pre.isPlaying }));
-            break;
-    
+              if (isPlaying) {
+                  setVideo((pre) => ({ ...pre, isPlaying: false }));
+                  videoRef.current[videoId].pause(); // Pause video here
+              } else {
+                  setVideo((pre) => ({ ...pre, isPlaying: true }));
+                  videoRef.current[videoId].play(); // Play video here
+              }
+              break;
+  
           case "play":
-            setVideo((pre) => ({ ...pre, isPlaying: !pre.isPlaying }));
-            break;
+              setVideo((pre) => ({ ...pre, isPlaying: true }));
+              videoRef.current[videoId].play(); // Play video here
+              break;
     
           default:
             return video;
